@@ -12,6 +12,9 @@ namespace MeshBufferRender.SlimDX
         readonly Direct3D.Direct3D direct3D = new Direct3D.Direct3D();
         readonly Direct3D.Device device;
 
+        public event EventHandler FreeResources;
+        public event EventHandler ReloadResources;
+
         public Direct3D.Device D3DDevice
         {
             get { return device; }
@@ -36,12 +39,7 @@ namespace MeshBufferRender.SlimDX
 
         public Base.IRenderSurface CreateRenderSurface(int width, int height, Base.PixelFormat format)
         {
-            throw new NotImplementedException();
-        }
-
-        public Base.ISceneRenderer CreateSceneRenderer()
-        {
-            throw new NotImplementedException();
+            return new RenderSurface(this, width, height, format);
         }
 
         bool disposed = false;
@@ -53,6 +51,12 @@ namespace MeshBufferRender.SlimDX
                 device.Dispose();
                 direct3D.Dispose();
             }
+        }
+
+
+        public Base.IScene CreateScene()
+        {
+            return new ConcurrentScene();
         }
     }
 }

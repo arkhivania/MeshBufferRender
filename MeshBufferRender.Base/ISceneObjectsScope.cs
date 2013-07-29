@@ -5,8 +5,8 @@ using System.Text;
 
 namespace MeshBufferRender.Base
 {
-    public interface IDevice : IDisposable
+    public interface ISceneObjectsScope : IDisposable
     {
-        IRenderSurface CreateRenderSurface(int width, int height, PixelFormat format);
+        IEnumerable<IMeshObject> MeshObjects { get; }
     }
 }

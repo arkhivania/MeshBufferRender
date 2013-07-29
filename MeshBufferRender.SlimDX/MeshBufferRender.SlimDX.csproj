@@ -50,11 +50,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConcurrentScene.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="ITextureProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderSurface.cs" />
+    <Compile Include="ResourcesBox.cs" />
+    <Compile Include="ResourceUnloadedException.cs" />
     <Compile Include="SceneRenderer.cs" />
     <Compile Include="SlimObject.cs" />
+    <Compile Include="SlimTexture.cs" />
+    <Compile Include="XMeshLoader.cs" />
+    <Compile Include="XTextureLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MeshBufferRender.Base
 {
-    public interface IRenderSurface
+    public interface IRenderSurface : IDisposable
     {
         int Width { get; }
         int Height { get; }

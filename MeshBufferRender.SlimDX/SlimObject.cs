@@ -9,23 +9,76 @@ namespace MeshBufferRender.SlimDX
 {
     class SlimObject : Base.IMeshObject
     {
-        readonly Mesh mesh;
+        Mesh mesh = null;
+
+        private readonly Device device;
+
+        private readonly Base.IStreamSource meshStreamSorce;
+
+        private readonly ITextureProvider textureProvider;
+
+        public ITextureProvider TextureProvider
+        {
+            get { return textureProvider; }
+        } 
+
+
         public Mesh Mesh
         {
-            get { return mesh; }
+            get 
+            {
+                if (mesh == null)
+                    throw new ResourceUnloadedException();
+                return mesh; 
+            }
         }
 
-        public SlimObject()
+        public SlimObject(Device device, Base.IStreamSource meshStreamSorce, ITextureProvider textureProvider)
         {
+            this.textureProvider = textureProvider;
+            this.meshStreamSorce = meshStreamSorce;
+            this.device = device;
 
+            device.FreeResources += device_FreeResources;
+            device.ReloadResources += device_ReloadResources;
+
+            LoadMesh();
+        }
+
+        void device_ReloadResources(object sender, EventArgs e)
+        {            
+            LoadMesh();
+        }
+  
+        private void LoadMesh()
+        {
+            if(mesh != null)
+                FreeMesh();
+
+            using (var stream = meshStreamSorce.StartRead())
+                mesh = Mesh.FromStream(device.D3DDevice, stream, MeshFlags.Managed);
+        }
+
+        void device_FreeResources(object sender, EventArgs e)
+        {
+            FreeMesh();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            FreeMesh();
+        }
+  
+        private void FreeMesh()
+        {
+            if (mesh != null)
+            {
+                mesh.Dispose();
+                mesh = null;
+            }
         }
 
-        Base.Matrix4x4 worldTransform = new Base.Matrix4x4();
+        Base.Matrix4x4 worldTransform = new Base.Matrix4x4(1);
         public Base.Matrix4x4 WorldTransform
         {
             get

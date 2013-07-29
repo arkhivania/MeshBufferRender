@@ -7,6 +7,6 @@ namespace MeshBufferRender.Base
 {
     public interface IBufferScope : IDisposable
     {
-
+        BufferData Data { get; }
     }
 }
