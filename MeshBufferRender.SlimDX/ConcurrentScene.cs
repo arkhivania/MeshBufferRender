@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using MeshBufferRender.Base;
@@ -12,11 +13,13 @@ namespace MeshBufferRender.SlimDX
 
         public IEnumerable<IMeshObject> MeshObjects
         {
-          get { return meshObjects; }  
+            get
+            {
+                return meshObjects;
+            }
         }
 
         readonly object monitorObject = new object();
-
 
         class Scope : ISceneObjectsScope, IDisposable
         {
@@ -30,7 +33,10 @@ namespace MeshBufferRender.SlimDX
 
             public IEnumerable<IMeshObject> MeshObjects
             {
-                get { return scene.MeshObjects; }
+                get
+                {
+                    return scene.MeshObjects;
+                }
             }
 
             public void Dispose()
@@ -38,7 +44,6 @@ namespace MeshBufferRender.SlimDX
                 Monitor.Exit(scene.monitorObject);
             }
         }
-
 
         public ISceneObjectsScope GetScope()
         {
@@ -57,7 +62,16 @@ namespace MeshBufferRender.SlimDX
                 return meshObjects.Remove(meshObject);
         }
 
-
         public System.Drawing.Color Color { get; set; }
+
+        public readonly ObservableCollection<Light> LightsCollection = new ObservableCollection<Light>();
+
+        public IEnumerable<Light> Lights
+        {
+            get
+            {
+                return LightsCollection;
+            }
+        }
     }
 }

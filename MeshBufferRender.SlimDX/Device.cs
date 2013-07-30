@@ -10,6 +10,11 @@ namespace MeshBufferRender.SlimDX
     public class Device : MeshBufferRender.Base.IDevice
     {
         readonly Direct3D.Direct3D direct3D = new Direct3D.Direct3D();
+        public Direct3D.Direct3D Direct
+        {
+            get { return direct3D; }
+        } 
+
         readonly Direct3D.Device device;
 
         public event EventHandler FreeResources;
@@ -18,7 +23,10 @@ namespace MeshBufferRender.SlimDX
         public Direct3D.Device D3DDevice
         {
             get { return device; }
-        } 
+        }
+
+        public bool TryMultisample { get; set; }
+        
 
 
         public Device(IntPtr windowHandle)
@@ -39,7 +47,18 @@ namespace MeshBufferRender.SlimDX
 
         public Base.IRenderSurface CreateRenderSurface(int width, int height, Base.PixelFormat format)
         {
-            return new RenderSurface(this, width, height, format);
+            if (TryMultisample)
+            {
+                try
+                {
+                    return new RenderSurface(this, width, height, format, Direct3D.MultisampleType.FourSamples);
+                }
+                catch(MultiSampleNotSupportedException) 
+                {
+                    return new RenderSurface(this, width, height, format, Direct3D.MultisampleType.None);
+                }
+            }else
+                return new RenderSurface(this, width, height, format, Direct3D.MultisampleType.None);
         }
 
         bool disposed = false;
@@ -51,12 +70,6 @@ namespace MeshBufferRender.SlimDX
                 device.Dispose();
                 direct3D.Dispose();
             }
-        }
-
-
-        public Base.IScene CreateScene()
-        {
-            return new ConcurrentScene();
         }
     }
 }

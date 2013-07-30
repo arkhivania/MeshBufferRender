@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyVersion.cs" />
     <Compile Include="BufferData.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Extensions.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="ISceneObjectsScope.cs" />
     <Compile Include="ISceneRenderer.cs" />
     <Compile Include="IRenderSurface.cs" />
+    <Compile Include="Light.cs" />
     <Compile Include="Matrix4x4.cs" />
     <Compile Include="PixelFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +69,20 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\References\MSBuild\MSBuild.Community.Tasks.Targets" />
+  <Target Name="BeforeBuild">
+    <Version BuildType="Automatic" RevisionType="Automatic" Major="1" Minor="0">
+      <Output TaskParameter="Major" PropertyName="Major" />
+      <Output TaskParameter="Minor" PropertyName="Minor" />
+      <Output TaskParameter="Build" PropertyName="Build" />
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </Version>
+    <AssemblyInfo CodeLanguage="CS" OutputFile="AssemblyVersion.cs" AssemblyVersion="$(Major).$(Minor).0.0" AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "$(ProjectDir)..\Out\$(ConfigurationName)"
+copy "$(TargetPath)" "$(ProjectDir)..\Out\$(ConfigurationName)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

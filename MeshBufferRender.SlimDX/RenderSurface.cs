@@ -9,9 +9,18 @@ namespace MeshBufferRender.SlimDX
     class RenderSurface : Base.IRenderSurface
     {
         SlimDx.Direct3D9.Surface renderSurface;
+        private readonly SlimDx.Direct3D9.MultisampleType multiSampleType;
+
         public SlimDx.Direct3D9.Surface Surface
         {
             get { return renderSurface; }
+        }
+
+        SlimDx.Direct3D9.Surface offscreenDownsampledRenderTarget;
+
+        public SlimDx.Direct3D9.Surface OffscreenDownsampledRenderTarget
+        {
+            get { return offscreenDownsampledRenderTarget; }
         }
 
         SlimDx.Direct3D9.Surface offscreenSurface;
@@ -34,8 +43,9 @@ namespace MeshBufferRender.SlimDX
 
         private readonly Device device;
 
-        public RenderSurface(Device device, int width, int height, Base.PixelFormat pixelFormat)
+        public RenderSurface(Device device, int width, int height, Base.PixelFormat pixelFormat, SlimDx.Direct3D9.MultisampleType multiSampleType)
         {
+            this.multiSampleType = multiSampleType;
             this.device = device;
             this.pixelFormat = pixelFormat;
             this.height = height;
@@ -61,17 +71,30 @@ namespace MeshBufferRender.SlimDX
             if (renderSurface != null)
                 FreeSurface();
 
+            int qualityLevel = 0;
+            int qualityLevels;
+
+            if (device.Direct.CheckDeviceMultisampleType(0, SlimDx.Direct3D9.DeviceType.Hardware, SlimDx.Direct3D9.Format.A8R8G8B8, false, multiSampleType, out qualityLevels))
+                qualityLevel = qualityLevels - 1;
+            else
+                throw new MultiSampleNotSupportedException();
+
             renderSurface = SlimDx.Direct3D9.Surface.CreateRenderTarget(device.D3DDevice, 
                 width, height, 
                 SlimDx.Direct3D9.Format.A8R8G8B8, 
-                SlimDx.Direct3D9.MultisampleType.None, 
-                0, true);
+                multiSampleType, 
+                qualityLevel, false);
 
             depthBuffer = SlimDx.Direct3D9.Surface.CreateDepthStencil(device.D3DDevice, 
                 width, height, 
-                SlimDx.Direct3D9.Format.D16, 
-                SlimDx.Direct3D9.MultisampleType.None, 
-                0, true);
+                SlimDx.Direct3D9.Format.D16,
+                multiSampleType, 
+                qualityLevel, false);
+
+            offscreenDownsampledRenderTarget = SlimDx.Direct3D9.Surface.CreateRenderTarget(device.D3DDevice,
+                width, height,
+                SlimDx.Direct3D9.Format.A8R8G8B8,
+                SlimDx.Direct3D9.MultisampleType.None, 0, false);
 
             offscreenSurface = SlimDx.Direct3D9.Surface.CreateOffscreenPlain(device.D3DDevice, width, height, SlimDx.Direct3D9.Format.A8R8G8B8, SlimDx.Direct3D9.Pool.SystemMemory);
         }
@@ -82,6 +105,7 @@ namespace MeshBufferRender.SlimDX
             {
                 renderSurface.Dispose();
                 depthBuffer.Dispose();
+                offscreenDownsampledRenderTarget.Dispose();
                 offscreenSurface.Dispose();
 
                 renderSurface = null;

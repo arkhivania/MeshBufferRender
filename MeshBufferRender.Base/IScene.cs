@@ -11,5 +11,6 @@ namespace MeshBufferRender.Base
         ISceneObjectsScope GetScope();
 
         Color Color { get; set; }
+        IEnumerable<Light> Lights { get; }        
     }
 }

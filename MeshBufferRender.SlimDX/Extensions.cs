@@ -20,6 +20,12 @@ namespace MeshBufferRender.SlimDX
             return new SlimDx.Vector3((float)vec.X, (float)vec.Y, (float)vec.Z);
         }
 
+        public static void Assert(this Result result)
+        {
+            if (!result.IsSuccess)
+                throw new InvalidOperationException();
+        }
+
         public static Matrix4x4 ToMatrix4x4(this Matrix matrix)
         {
             return new Matrix4x4()

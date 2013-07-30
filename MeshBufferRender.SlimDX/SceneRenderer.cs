@@ -27,55 +27,64 @@ namespace MeshBufferRender.SlimDX
             var slimRenderSurface = (RenderSurface)renderSurface;
 
             device3d.DepthStencilSurface = slimRenderSurface.DepthBuffer;
-            device3d.SetRenderTarget(0, slimRenderSurface.Surface);
+            device3d.SetRenderTarget(0, slimRenderSurface.Surface).Assert();
 
-            device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, (float)(camera.Target - camera.Position).Length * 2.0f, 0);
+            device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, (float)(camera.Target - camera.Position).Length * 2.0f, 0).Assert();
 
             var projection = Matrix.PerspectiveFovLH(camera.ViewAngle,
                 (float)renderSurface.Width / renderSurface.Height, 1, (float)(camera.Target - camera.Position).Length * 2.0f);
 
             var view = Matrix.LookAtLH(camera.Position.ToSlimDXVector(), camera.Target.ToSlimDXVector(), camera.CameraUp.ToSlimDXVector());
 
-            device3d.SetLight(0, new Light
+            foreach (var l in scene.Lights.Select((l, index) => new { Light = l, Index = index }))
             {
-                Type = LightType.Point,
-                Ambient = Color.LightGray,
-                Position = new Direct.Vector3(0, 0, -100f),
-                Diffuse = Color.White,
-                Range = 200f,
-                Attenuation0 = 0.1f
-            });
+                device3d.SetLight(l.Index, new Direct3D.Light
+                {
+                    Type = LightType.Point,
+                    Position = l.Light.Position.ToSlimDXVector(),
+                    Diffuse = l.Light.Diffuse,
+                    Range = l.Light.Range,
+                    Attenuation0 = l.Light.Attenuation0, 
+                    Ambient = l.Light.Ambient
+                }).Assert();
 
-            device3d.EnableLight(0, true);
+                device3d.EnableLight(l.Index, true).Assert();
+            }
+
+            device3d.SetTransform(TransformState.Projection, projection).Assert();
+            device3d.SetTransform(TransformState.View, view).Assert();
 
             using(var objectsScope = scene.GetScope())
             foreach (var obj in objectsScope.MeshObjects.OfType<SlimObject>())
             {
-                device3d.SetRenderState(RenderState.CullMode, Cull.Clockwise);
-                device3d.SetRenderState(RenderState.Lighting, true);
-                device3d.SetRenderState(RenderState.ZEnable, true);
+                device3d.SetRenderState(RenderState.ShadeMode, ShadeMode.Gouraud).Assert();
+                device3d.SetRenderState(RenderState.CullMode, Cull.Clockwise).Assert();
+                device3d.SetRenderState(RenderState.Lighting, true).Assert();
+                device3d.SetRenderState(RenderState.ZEnable, true).Assert();
+                
+                device3d.SetTransform(TransformState.World, obj.WorldTransform.ToSlimDXMatrix()).Assert();
 
-                device3d.SetTransform(TransformState.Projection, projection);
-                device3d.SetTransform(TransformState.View, view);
-
-                device3d.SetTransform(TransformState.World, obj.WorldTransform.ToSlimDXMatrix());
-
-                device3d.BeginScene();
+                device3d.BeginScene().Assert();
 
                 foreach (var material in obj.Mesh.GetMaterials().Select((m, index) => new { Material = m, index }))
                 {
                     if(!string.IsNullOrEmpty(material.Material.TextureFileName))
                     {
-                        device3d.SetTexture(0, obj.TextureProvider.GetTexture(material.Material.TextureFileName).Texture);
-                        device3d.Material = material.Material.MaterialD3D;                    
-                        obj.Mesh.DrawSubset(material.index);
+                        device3d.SetTexture(0, obj.TextureProvider.GetTexture(material.Material.TextureFileName).Texture).Assert();
+                        device3d.Material = material.Material.MaterialD3D;
+                        obj.Mesh.DrawSubset(material.index).Assert();
 
-                        device3d.SetTexture(0, null);
+                        device3d.SetTexture(0, null).Assert();
                     }
                 }
-                device3d.EndScene();
-                device3d.GetRenderTargetData(slimRenderSurface.Surface, slimRenderSurface.OffscreenSurface);
+                device3d.EndScene().Assert();
+
+                device3d.StretchRectangle(slimRenderSurface.Surface, slimRenderSurface.OffscreenDownsampledRenderTarget, TextureFilter.None).Assert();
+                device3d.GetRenderTargetData(slimRenderSurface.OffscreenDownsampledRenderTarget, slimRenderSurface.OffscreenSurface).Assert();
             }
+
+            //foreach (var i in Enumerable.Range(0, scene.Lights.Count()))
+            //    device3d.EnableLight(i, false);
         }
     }
 }
