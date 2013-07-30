@@ -11,13 +11,13 @@ using Direct3D = SlimDX.Direct3D9;
 
 namespace MeshBufferRender.SlimDX
 {
-    public class SceneRenderer : Base.ISceneRenderer
+    public class SceneRenderer : MeshBufferRender.Base.ISceneRenderer
     {
         private readonly Device device;
 
-        public SceneRenderer(Device device)
+        public SceneRenderer(IDevice device)
         {
-            this.device = device;
+            this.device = (Device)device;
         }
 
         public void Render(Camera camera, IScene scene, IRenderSurface renderSurface)
@@ -54,34 +54,16 @@ namespace MeshBufferRender.SlimDX
             device3d.SetTransform(TransformState.Projection, projection).Assert();
             device3d.SetTransform(TransformState.View, view).Assert();
 
+            device3d.BeginScene().Assert();
+
             using(var objectsScope = scene.GetScope())
-            foreach (var obj in objectsScope.MeshObjects.OfType<SlimObject>())
-            {
-                device3d.SetRenderState(RenderState.ShadeMode, ShadeMode.Gouraud).Assert();
-                device3d.SetRenderState(RenderState.CullMode, Cull.Clockwise).Assert();
-                device3d.SetRenderState(RenderState.Lighting, true).Assert();
-                device3d.SetRenderState(RenderState.ZEnable, true).Assert();
-                
-                device3d.SetTransform(TransformState.World, obj.WorldTransform.ToSlimDXMatrix()).Assert();
+            foreach (var obj in objectsScope.MeshObjects.OfType<Base.ISlimDrawObject>())
+                obj.Draw(device);
 
-                device3d.BeginScene().Assert();
+            device3d.EndScene().Assert();
 
-                foreach (var material in obj.Mesh.GetMaterials().Select((m, index) => new { Material = m, index }))
-                {
-                    if(!string.IsNullOrEmpty(material.Material.TextureFileName))
-                    {
-                        device3d.SetTexture(0, obj.TextureProvider.GetTexture(material.Material.TextureFileName).Texture).Assert();
-                        device3d.Material = material.Material.MaterialD3D;
-                        obj.Mesh.DrawSubset(material.index).Assert();
-
-                        device3d.SetTexture(0, null).Assert();
-                    }
-                }
-                device3d.EndScene().Assert();
-
-                device3d.StretchRectangle(slimRenderSurface.Surface, slimRenderSurface.OffscreenDownsampledRenderTarget, TextureFilter.None).Assert();
-                device3d.GetRenderTargetData(slimRenderSurface.OffscreenDownsampledRenderTarget, slimRenderSurface.OffscreenSurface).Assert();
-            }
+            device3d.StretchRectangle(slimRenderSurface.Surface, slimRenderSurface.OffscreenDownsampledRenderTarget, TextureFilter.Linear).Assert();
+            device3d.GetRenderTargetData(slimRenderSurface.OffscreenDownsampledRenderTarget, slimRenderSurface.OffscreenSurface).Assert();
 
             //foreach (var i in Enumerable.Range(0, scene.Lights.Count()))
             //    device3d.EnableLight(i, false);

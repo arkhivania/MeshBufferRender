@@ -6,7 +6,7 @@ using SlimDx = SlimDX;
 
 namespace MeshBufferRender.SlimDX
 {
-    class RenderSurface : Base.IRenderSurface
+    class RenderSurface : MeshBufferRender.Base.IRenderSurface
     {
         SlimDx.Direct3D9.Surface renderSurface;
         private readonly SlimDx.Direct3D9.MultisampleType multiSampleType;
@@ -39,11 +39,11 @@ namespace MeshBufferRender.SlimDX
 
         private readonly int height;
 
-        private readonly Base.PixelFormat pixelFormat;
+        private readonly MeshBufferRender.Base.PixelFormat pixelFormat;
 
         private readonly Device device;
 
-        public RenderSurface(Device device, int width, int height, Base.PixelFormat pixelFormat, SlimDx.Direct3D9.MultisampleType multiSampleType)
+        public RenderSurface(Device device, int width, int height, MeshBufferRender.Base.PixelFormat pixelFormat, SlimDx.Direct3D9.MultisampleType multiSampleType)
         {
             this.multiSampleType = multiSampleType;
             this.device = device;
@@ -54,7 +54,7 @@ namespace MeshBufferRender.SlimDX
             device.FreeResources += device_FreeResources;
             device.ReloadResources += device_ReloadResources;
 
-            if (pixelFormat != Base.PixelFormat.BGRA)
+            if (pixelFormat != MeshBufferRender.Base.PixelFormat.BGRA)
                 throw new ArgumentException("BGRA format only supported");
 
             CreateTarget();
@@ -129,11 +129,11 @@ namespace MeshBufferRender.SlimDX
             get { return height; }
         }
 
-        class Scope : Base.IBufferScope
+        class Scope : MeshBufferRender.Base.IBufferScope
         {
             private readonly SlimDx.Direct3D9.Surface surface;
 
-            readonly Base.BufferData data;
+            readonly MeshBufferRender.Base.BufferData data;
 
             public Scope(RenderSurface renderSurface)
             {
@@ -141,11 +141,11 @@ namespace MeshBufferRender.SlimDX
 
                 var rect = surface.LockRectangle(SlimDx.Direct3D9.LockFlags.ReadOnly);
 
-                data = new Base.BufferData
+                data = new MeshBufferRender.Base.BufferData
                 {
                     Width = renderSurface.width, 
-                    Height = renderSurface.height, 
-                    Format = Base.PixelFormat.BGRA, 
+                    Height = renderSurface.height,
+                    Format = MeshBufferRender.Base.PixelFormat.BGRA, 
                     Pointer = rect.Data.DataPointer, 
                     Stride = rect.Pitch
                 };
@@ -153,7 +153,7 @@ namespace MeshBufferRender.SlimDX
             }
 
 
-            public Base.BufferData Data
+            public MeshBufferRender.Base.BufferData Data
             {
                 get 
                 {
@@ -169,7 +169,7 @@ namespace MeshBufferRender.SlimDX
             }
         }
 
-        public Base.IBufferScope GetScope()
+        public MeshBufferRender.Base.IBufferScope GetScope()
         {
             return new Scope(this);
         }

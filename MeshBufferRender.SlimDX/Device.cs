@@ -45,7 +45,7 @@ namespace MeshBufferRender.SlimDX
                 | Direct3D.CreateFlags.HardwareVertexProcessing, prmtrs);
         }
 
-        public Base.IRenderSurface CreateRenderSurface(int width, int height, Base.PixelFormat format)
+        public MeshBufferRender.Base.IRenderSurface CreateRenderSurface(int width, int height, MeshBufferRender.Base.PixelFormat format)
         {
             if (TryMultisample)
             {

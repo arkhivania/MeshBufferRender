@@ -10,12 +10,12 @@ namespace MeshBufferRender.SlimDX
 {
     public static class Extensions
     {
-        public static Base.Vector3 ToVector3(this SlimDx.Vector3 vec)
+        public static MeshBufferRender.Base.Vector3 ToVector3(this SlimDx.Vector3 vec)
         {
-            return new Base.Vector3(vec.X, vec.Y, vec.Z);
+            return new MeshBufferRender.Base.Vector3(vec.X, vec.Y, vec.Z);
         }
 
-        public static SlimDx.Vector3 ToSlimDXVector(this Base.Vector3 vec)
+        public static SlimDx.Vector3 ToSlimDXVector(this MeshBufferRender.Base.Vector3 vec)
         {
             return new SlimDx.Vector3((float)vec.X, (float)vec.Y, (float)vec.Z);
         }

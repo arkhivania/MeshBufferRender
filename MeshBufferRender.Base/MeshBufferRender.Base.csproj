@@ -61,6 +61,7 @@
     <Compile Include="Matrix4x4.cs" />
     <Compile Include="PixelFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamSources\AssemblyResourceSource.cs" />
     <Compile Include="StreamSources\FileStreamSource.cs" />
     <Compile Include="Vector3.cs" />
   </ItemGroup>

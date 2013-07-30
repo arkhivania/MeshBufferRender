@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeshBufferRender.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,17 +21,17 @@ namespace MeshBufferRender.SlimDX
             }
         }
 
-        private readonly Base.IStreamSource streamSource;
+        private readonly MeshBufferRender.Base.IStreamSource streamSource;
 
         private readonly Device device;
 
-        public SlimTexture(Device device, Base.IStreamSource streamSource)
+        public SlimTexture(IDevice device, MeshBufferRender.Base.IStreamSource streamSource)
         { 
-            this.device = device;
+            this.device = (Device)device;
             this.streamSource = streamSource;
 
-            device.FreeResources += device_FreeResources;
-            device.ReloadResources += device_ReloadResources;
+            this.device.FreeResources += device_FreeResources;
+            this.device.ReloadResources += device_ReloadResources;
 
             LoadTexture();
         }

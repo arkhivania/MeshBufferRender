@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyVersion.cs" />
+    <Compile Include="Base\ISlimDrawObject.cs" />
     <Compile Include="ConcurrentScene.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Extensions.cs" />
@@ -64,8 +65,6 @@
     <Compile Include="SceneRenderer.cs" />
     <Compile Include="SlimObject.cs" />
     <Compile Include="SlimTexture.cs" />
-    <Compile Include="XMeshLoader.cs" />
-    <Compile Include="XTextureLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
