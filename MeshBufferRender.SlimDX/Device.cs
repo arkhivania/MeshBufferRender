@@ -33,8 +33,6 @@ namespace MeshBufferRender.SlimDX
         {
             var prmtrs = new Direct3D.PresentParameters()
             {
-                AutoDepthStencilFormat = Direct3D.Format.D16,
-                EnableAutoDepthStencil = true,
                 Windowed = true,
                 SwapEffect = Direct3D.SwapEffect.Discard
             };
