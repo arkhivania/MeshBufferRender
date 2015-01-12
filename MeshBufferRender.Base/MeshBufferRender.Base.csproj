@@ -51,6 +51,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="IBufferScope.cs" />
     <Compile Include="IDevice.cs" />
+    <Compile Include="ILog.cs" />
     <Compile Include="IMeshObject.cs" />
     <Compile Include="IStreamSource.cs" />
     <Compile Include="IScene.cs" />

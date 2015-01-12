@@ -22,5 +22,15 @@ namespace MeshBufferRender.Base
             return Vector3.Angle(a, b);
         }
 
+        public static int BytesPerPixel(this PixelFormat format)
+        {
+            switch(format)
+            {
+                case PixelFormat.BGRA:
+                    return 4;
+                default:
+                    throw new InvalidOperationException("Format not supported:" + format);
+            }
+        }
     }
 }

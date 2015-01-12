@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MeshBufferRender.Base;
+using SlimDX.Direct3D9;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,10 @@ namespace MeshBufferRender.SlimDX
     {
         SlimDx.Direct3D9.Surface renderSurface;
         private readonly SlimDx.Direct3D9.MultisampleType multiSampleType;
+
+        private readonly DeviceType deviceType;
+
+        private readonly ILog logService;
 
         public SlimDx.Direct3D9.Surface Surface
         {
@@ -43,9 +49,11 @@ namespace MeshBufferRender.SlimDX
 
         private readonly Device device;
 
-        public RenderSurface(Device device, int width, int height, MeshBufferRender.Base.PixelFormat pixelFormat, SlimDx.Direct3D9.MultisampleType multiSampleType)
+        public RenderSurface(Device device, int width, int height, MeshBufferRender.Base.PixelFormat pixelFormat, SlimDx.Direct3D9.MultisampleType multiSampleType, DeviceType deviceType, ILog logService)
         {
             this.multiSampleType = multiSampleType;
+            this.deviceType = deviceType;
+            this.logService = logService;
             this.device = device;
             this.pixelFormat = pixelFormat;
             this.height = height;
@@ -74,11 +82,12 @@ namespace MeshBufferRender.SlimDX
             int qualityLevel = 0;
             int qualityLevels;
 
-            if (device.Direct.CheckDeviceMultisampleType(0, SlimDx.Direct3D9.DeviceType.Hardware, SlimDx.Direct3D9.Format.A8R8G8B8, false, multiSampleType, out qualityLevels))
+            if (device.Direct.CheckDeviceMultisampleType(0, deviceType, SlimDx.Direct3D9.Format.A8R8G8B8, false, multiSampleType, out qualityLevels))
                 qualityLevel = qualityLevels - 1;
             else
                 throw new MultiSampleNotSupportedException();
 
+            this.logService.WriteInformation(string.Concat("Device multisample qualityLevel:", qualityLevel));
             renderSurface = SlimDx.Direct3D9.Surface.CreateRenderTarget(device.D3DDevice, 
                 width, height, 
                 SlimDx.Direct3D9.Format.A8R8G8B8, 
@@ -97,6 +106,7 @@ namespace MeshBufferRender.SlimDX
                 SlimDx.Direct3D9.MultisampleType.None, 0, false);
 
             offscreenSurface = SlimDx.Direct3D9.Surface.CreateOffscreenPlain(device.D3DDevice, width, height, SlimDx.Direct3D9.Format.A8R8G8B8, SlimDx.Direct3D9.Pool.SystemMemory);
+            logService.WriteInformation(string.Format("Render surface: {0}", new { MultisampleType = multiSampleType, MultisampleQuality = renderSurface.Description.MultisampleQuality, Width = width, Height = renderSurface.Description.Height }));
         }
   
         private void FreeSurface()
