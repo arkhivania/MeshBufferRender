@@ -29,7 +29,7 @@ namespace MeshBufferRender.SlimDX
             device3d.DepthStencilSurface = slimRenderSurface.DepthBuffer;
             device3d.SetRenderTarget(0, slimRenderSurface.Surface).Assert();
 
-            device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, (float)(camera.Target - camera.Position).Length * 2.0f, 0).Assert();
+            device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, 1.0f, 0).Assert();
 
             var projection = Matrix.PerspectiveFovLH(camera.ViewAngle,
                 (float)renderSurface.Width / renderSurface.Height, 1, (float)(camera.Target - camera.Position).Length * 2.0f);

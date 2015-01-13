@@ -96,7 +96,7 @@ namespace MeshBufferRender.SlimDX
 
             depthBuffer = SlimDx.Direct3D9.Surface.CreateDepthStencil(device.D3DDevice, 
                 width, height, 
-                SlimDx.Direct3D9.Format.D16,
+                SlimDx.Direct3D9.Format.D24S8,
                 multiSampleType, 
                 qualityLevel, false);
 
