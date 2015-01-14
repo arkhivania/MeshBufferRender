@@ -6,7 +6,7 @@ using SlimDX.Direct3D9;
 
 namespace MeshBufferRender.SlimDX.Geometry
 {
-    public class SlimCylinder : SlimMeshBase<global::SlimDX.Direct3D9.Mesh>
+    public class SlimCylinder : SlimMeshBase
     {
         public SlimCylinder(Device device, 
             ITextureProvider textureProvider,

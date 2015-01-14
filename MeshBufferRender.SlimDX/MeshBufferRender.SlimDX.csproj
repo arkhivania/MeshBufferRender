@@ -56,6 +56,7 @@
     <Compile Include="ConcurrentScene.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Geometry\SlimBox.cs" />
     <Compile Include="Geometry\SlimCylinder.cs" />
     <Compile Include="Geometry\SlimMeshBase.cs" />
     <Compile Include="Geometry\SlimSphere.cs" />

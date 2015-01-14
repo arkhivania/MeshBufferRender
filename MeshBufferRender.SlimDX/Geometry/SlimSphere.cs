@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace MeshBufferRender.SlimDX.Geometry
 {
-    public class SlimSphere : SlimMeshBase<global::SlimDX.Direct3D9.Mesh>
+    public class SlimSphere : SlimMeshBase
     {   
         public SlimSphere(Device device, 
             ITextureProvider textureProvider,

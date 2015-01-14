@@ -7,20 +7,19 @@ using System.Text;
 
 namespace MeshBufferRender.SlimDX.Geometry
 {
-    public class SlimMeshBase<T> : IMeshObject, Base.ISlimDrawObject 
-        where T : global::SlimDX.Direct3D9.Mesh
+    public class SlimMeshBase : IMeshObject, Base.ISlimDrawObject 
     {
         private readonly Device device;        
         private readonly ITextureProvider textureProvider;
         private readonly ExtendedMaterial material;
 
-        T mesh;
+        global::SlimDX.Direct3D9.Mesh mesh;
 
-        private readonly Func<T> createMesh;
+        private readonly Func<global::SlimDX.Direct3D9.Mesh> createMesh;
 
         public SlimMeshBase(Device device,
             ITextureProvider textureProvider,
-            ExtendedMaterial material, Func<T> createMesh)
+            ExtendedMaterial material, Func<global::SlimDX.Direct3D9.Mesh> createMesh)
         {
                 this.device = device;
                 this.textureProvider = textureProvider;
