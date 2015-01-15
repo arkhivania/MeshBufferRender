@@ -65,7 +65,7 @@ namespace MeshBufferRender.SlimDX.Geometry
             device3D.SetRenderState(RenderState.ZEnable, true).Assert();
             device3D.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
             device3D.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
-            device3D.SetRenderState(RenderState.ZFunc, Compare.LessEqual);
+            device3D.SetRenderState(RenderState.ZFunc, Compare.Less);
             device3D.SetRenderState(RenderState.ZWriteEnable, true);
 
             device3D.SetTransform(TransformState.World, WorldTransform.ToSlimDXMatrix()).Assert();
