@@ -31,8 +31,12 @@ namespace MeshBufferRender.SlimDX
 
             device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, 1.0f, 0).Assert();
 
+            float zNear = 1.0f;
+            if (camera.CameraNear != null)
+                zNear = camera.CameraNear;
+
             var projection = Matrix.PerspectiveFovLH(camera.ViewAngle,
-                (float)renderSurface.Width / renderSurface.Height, 1, (float)(camera.Target - camera.Position).Length * 2.0f);
+                (float)renderSurface.Width / renderSurface.Height, zNear, (float)(camera.Target - camera.Position).Length * 2.0f);
 
             var view = Matrix.LookAtLH(camera.Position.ToSlimDXVector(), camera.Target.ToSlimDXVector(), camera.CameraUp.ToSlimDXVector());
 

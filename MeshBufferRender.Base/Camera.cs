@@ -12,5 +12,7 @@ namespace MeshBufferRender.Base
         public Vector3 CameraUp { get; set; }
 
         public float ViewAngle { get; set; }
+
+        public float CameraNear { get; set; }
     }
 }
