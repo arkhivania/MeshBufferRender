@@ -53,6 +53,7 @@
     <Compile Include="IDevice.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IMeshObject.cs" />
+    <Compile Include="IProjectionBuilder.cs" />
     <Compile Include="IStreamSource.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="ISceneObjectsScope.cs" />

@@ -68,6 +68,7 @@
     <Compile Include="ResourceUnloadedException.cs" />
     <Compile Include="SceneRenderer.cs" />
     <Compile Include="SlimObject.cs" />
+    <Compile Include="SlimProjectionBuilder.cs" />
     <Compile Include="SlimTexture.cs" />
   </ItemGroup>
   <ItemGroup>

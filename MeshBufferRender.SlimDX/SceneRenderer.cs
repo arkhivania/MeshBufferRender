@@ -13,12 +13,22 @@ namespace MeshBufferRender.SlimDX
 {
     public class SceneRenderer : MeshBufferRender.Base.ISceneRenderer
     {
+        private readonly IProjectionBuilder projectionBuilder;
+
         private readonly Device device;
 
         public SceneRenderer(IDevice device)
+            :this(device, new SlimProjectionBuilder())
+        {
+
+        }
+
+        public SceneRenderer(IDevice device, IProjectionBuilder projectionBuilder)
         {
             this.device = (Device)device;
+            this.projectionBuilder = projectionBuilder;
         }
+        
 
         public void Render(Camera camera, IScene scene, IRenderSurface renderSurface)
         {
@@ -30,13 +40,7 @@ namespace MeshBufferRender.SlimDX
             device3d.SetRenderTarget(0, slimRenderSurface.Surface).Assert();
 
             device3d.Clear(ClearFlags.ZBuffer | ClearFlags.Target, scene.Color, 1.0f, 0).Assert();
-
-            float zNear = 1.0f;
-            if (camera.CameraNear != null)
-                zNear = camera.CameraNear;
-
-            var projection = Matrix.PerspectiveFovLH(camera.ViewAngle,
-                (float)renderSurface.Width / renderSurface.Height, zNear, (float)(camera.Target - camera.Position).Length * 2.0f);
+            var projection = projectionBuilder.BuildProjectionMatrix(camera, renderSurface).ToSlimDXMatrix();
 
             var view = Matrix.LookAtLH(camera.Position.ToSlimDXVector(), camera.Target.ToSlimDXVector(), camera.CameraUp.ToSlimDXVector());
 
